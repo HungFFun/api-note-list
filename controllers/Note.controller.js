@@ -1,5 +1,4 @@
 const note = require("../models/Note.model");
-const { findOneAndUpdate, findByIdAndUpdate } = require("../models/Work.model");
 const work = require("../models/Work.model");
 
 const getListNote = async (req, res) => {
@@ -40,28 +39,71 @@ const createNote = async (req, res) => {
 };
 
 const addWordOnNote = async (req, res) => {
-  const { idUser, idNote, titleWork } = req.body;
+  try {
+    const { idUser, idNote, titleWork } = req.body;
 
-  const newWork = new work({
-    titleWork: titleWork,
-  });
-  newWork.save();
-
-  await note
-    .findOneAndUpdate(
-      { _id: idNote, user: idUser },
-      { $push: { work: newWork._id } }
-    )
-    .then((value) => {
-      res.status(200).send({ message: "Thêm thành công " });
-    })
-    .catch((error) => {
-      res.status(400).send(error);
+    const newWork = new work({
+      titleWork: titleWork,
     });
-};
+    newWork.save();
 
+    await note
+      .findOneAndUpdate(
+        { _id: idNote, user: idUser },
+        { $push: { work: newWork._id } }
+      )
+      .then((value) => {
+        res.status(200).send({ message: "Thêm thành công " });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+const remoteWork = async (req, res) => {
+  try {
+    const { idUser, idNote, idWork } = req.body;
+    await note
+      .findOneAndUpdate(
+        { _id: idNote, user: idUser },
+        { $pull: { work: idWork } }
+      )
+      .then(async (value) => {
+        await work.findByIdAndDelete({ _id: idWork });
+        res.status(200).send({ message: "Xóa thành công " });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+const pinNotes = async (req, res) => {
+  try {
+    const { idUser, idNote } = req.body;
+    const noteFind = await note
+      .findOne({ _id: idNote, user: idUser })
+      .then(async (value) => {
+        await note.findByIdAndUpdate(
+          { _id: value._id },
+          { $set: { pin: !value.pin } }
+        );
+        res.status(200).send({ message: "update thành công" });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 module.exports = {
   getListNote,
   createNote,
   addWordOnNote,
+  remoteWork,
+  pinNotes,
 };
