@@ -1,4 +1,5 @@
 const note = require("../models/Note.model");
+const { findOneAndUpdate, findByIdAndUpdate } = require("../models/Work.model");
 const work = require("../models/Work.model");
 
 const getListNote = async (req, res) => {
@@ -38,7 +39,29 @@ const createNote = async (req, res) => {
   }
 };
 
+const addWordOnNote = async (req, res) => {
+  const { idUser, idNote, titleWork } = req.body;
+
+  const newWork = new work({
+    titleWork: titleWork,
+  });
+  newWork.save();
+
+  await note
+    .findOneAndUpdate(
+      { _id: idNote, user: idUser },
+      { $push: { work: newWork._id } }
+    )
+    .then((value) => {
+      res.status(200).send({ message: "Thêm thành công " });
+    })
+    .catch((error) => {
+      res.status(400).send(error);
+    });
+};
+
 module.exports = {
   getListNote,
   createNote,
+  addWordOnNote,
 };
