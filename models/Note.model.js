@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const Schema = mongoose.Schema;
+
+const user = require("./User.model");
+const work = require("./Work.model");
 
 // create models
-const NoteSchema = new Schema({
+const NoteSchema = mongoose.Schema({
   title: {
     type: String,
     default: null,
@@ -12,10 +14,10 @@ const NoteSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: user,
   },
-  listWord: [
+  work: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: word,
+      ref: work,
     },
   ],
   color: {

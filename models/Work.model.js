@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-const WordSchema = new Schema({
-  titleWord: {
+const WorkSchema = mongoose.Schema({
+  titleWork: {
     type: String,
     required: true,
   },
@@ -12,5 +11,5 @@ const WordSchema = new Schema({
     default: false,
   },
 });
-WordSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("word".WordSchema, "words");
+WorkSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model("work", WorkSchema, "works");

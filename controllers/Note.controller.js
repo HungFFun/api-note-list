@@ -1,9 +1,9 @@
-const note = require("../models/Note");
-const word = require("../models/Word");
+const note = require("../models/Note.model");
+const work = require("../models/Work.model");
 
 const getListNote = async (req, res) => {
   try {
-    const listNote = await note.find({});
+    const listNote = await note.find({}).populate("work");
     res.status(200).send(listNote);
   } catch (error) {
     res.status(400).send(error);
@@ -11,21 +11,28 @@ const getListNote = async (req, res) => {
 };
 const createNote = async (req, res) => {
   try {
-    const { idUser, title } = res.body;
-
-    const newWord = new word({
-      title: title,
+    const { idUser, title, workList } = req.body;
+    let listWork = [];
+    workList.map((titleWork) => {
+      const newWord = new work({
+        titleWork: titleWork,
+      });
+      newWord.save();
+      listWork.push(newWord._id);
     });
-
-    let listWord = [];
-    listWord.push(newWord._id);
-
     const newNote = new note({
       user: idUser,
-      listWord: listWord,
+      work: listWork,
+      title: title,
     });
-
-    console.log(newNote);
+    newNote
+      .save()
+      .then((value) => {
+        res.status(200).send({ message: "Thêm thành công" });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
   } catch (error) {
     res.status(400).send(error);
   }
