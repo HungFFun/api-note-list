@@ -8,6 +8,7 @@ const db = require("./config/db");
 
 const userRouter = require("./routes/User.router");
 const noteRouter = require("./routes/Note.router");
+const workRouter = require("./routes/Work.router");
 
 db.connectWithRetry();
 // view engine setup
@@ -48,5 +49,6 @@ app.use(function (req, res, next) {
 
 app.use("/", userRouter);
 app.use("/", noteRouter);
+app.use("/", workRouter);
 
 module.exports = app;

@@ -11,7 +11,7 @@ const getListNote = async (req, res) => {
 };
 const createNote = async (req, res) => {
   try {
-    const { idUser, title, workList } = req.body;
+    const { idUser, title, workList, colorNote } = req.body;
     let listWork = [];
     workList.map((titleWork) => {
       const newWord = new work({
@@ -24,6 +24,7 @@ const createNote = async (req, res) => {
       user: idUser,
       work: listWork,
       title: title,
+      color: colorNote,
     });
     newNote
       .save()
@@ -38,48 +39,6 @@ const createNote = async (req, res) => {
   }
 };
 
-const addWordOnNote = async (req, res) => {
-  try {
-    const { idUser, idNote, titleWork } = req.body;
-
-    const newWork = new work({
-      titleWork: titleWork,
-    });
-    await newWork.save();
-    await note
-      .findOneAndUpdate(
-        { _id: idNote, user: idUser },
-        { $push: { work: newWork._id } }
-      )
-      .then((value) => {
-        res.status(200).send({ message: "Thêm thành công " });
-      })
-      .catch((error) => {
-        res.status(400).send(error);
-      });
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-const remoteWork = async (req, res) => {
-  try {
-    const { idUser, idNote, idWork } = req.body;
-    await note
-      .findOneAndUpdate(
-        { _id: idNote, user: idUser },
-        { $pull: { work: idWork } }
-      )
-      .then(async (value) => {
-        await work.findByIdAndDelete({ _id: idWork });
-        res.status(200).send({ message: "Xóa thành công " });
-      })
-      .catch((error) => {
-        res.status(400).send(error);
-      });
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
 const pinNotes = async (req, res) => {
   try {
     const { idUser, idNote } = req.body;
@@ -99,27 +58,26 @@ const pinNotes = async (req, res) => {
     res.status(400).send(error);
   }
 };
-const updateStatusWork = async (req, res) => {
+
+const updateColorBackgroundNote = async (req, res) => {
   try {
-    const { idWork } = req.body;
-    await work.findById({ _id: idWork }).then(async (value) => {
-      await work.findByIdAndUpdate(
-        { _id: idWork },
-        { $set: { isCompleted: !value.isCompleted } }
-      );
-      res.status(200).send({ message: "update thanh cong" });
+    const { color } = req.body;
+    const { id } = req.params;
+
+    await note.findById({ _id: id }).then(async (value) => {
+      await note.findByIdAndUpdate({ _id: id }, { $set: { color: color } });
+      res.status(200).send({ message: "update thành công" });
     });
   } catch (error) {
     res.status(400).send(error);
   }
 };
 
-const updateColorBackgroundNote = async (req, res) => {
+const deleteNote = async (req, res) => {
   try {
-    const { idNote, color } = req.body;
-    await note.findById({ _id: idNote }).then(async (value) => {
-      await note.findByIdAndUpdate({ _id: idNote }, { $set: { color: color } });
-      res.status(200).send({ message: "update thanh cong" });
+    const { id } = req.params;
+    await note.findByIdAndDelete({ _id: id }).then((value) => {
+      res.status(200).send({ message: "Xóa thành công" });
     });
   } catch (error) {
     res.status(400).send(error);
@@ -128,9 +86,7 @@ const updateColorBackgroundNote = async (req, res) => {
 module.exports = {
   getListNote,
   createNote,
-  addWordOnNote,
-  remoteWork,
   pinNotes,
-  updateStatusWork,
   updateColorBackgroundNote,
+  deleteNote,
 };

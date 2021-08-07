@@ -4,13 +4,11 @@ const noteController = require("../controllers/Note.controller");
 
 router.get("/api/notes", noteController.getListNote);
 router.post("/api/create-note", noteController.createNote);
-router.post("/api/add-work", noteController.addWordOnNote);
-router.post("/api/delete-work", noteController.remoteWork);
 router.post("/api/update-pin", noteController.pinNotes);
-router.post("/api/update-status", noteController.updateStatusWork);
-router.post(
-  "/api/update-background-color",
+router.put(
+  "/api/update-background-color/:id",
   noteController.updateColorBackgroundNote
 );
+router.delete("/api/delete-note/:id", noteController.deleteNote);
 
 module.exports = router;
