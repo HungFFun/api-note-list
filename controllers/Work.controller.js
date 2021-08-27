@@ -1,5 +1,22 @@
 const work = require("../models/Work.model");
-const note = require("../models/Note.model");
+
+const getWorkByIdNote = async (req, res) => {
+  try {
+    const { idNote } = req.body;
+    console.log(idNote);
+
+    await work
+      .find({ idNote: idNote })
+      .then((value) => {
+        res.status(200).send(value);
+      })
+      .catch((err) => { 
+        res.status(400).send(err);
+      });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
 const updateStatusWork = async (req, res) => {
   try {
@@ -16,19 +33,16 @@ const updateStatusWork = async (req, res) => {
   }
 };
 
-const addWordOnNote = async (req, res) => {
+const addNote = async (req, res) => {
   try {
-    const { idUser, idNote, titleWork } = req.body;
+    const { idNote, titleWork } = req.body;
 
     const newWork = new work({
+      idNote: idNote,
       titleWork: titleWork,
     });
-    await newWork.save();
-    await note
-      .findOneAndUpdate(
-        { _id: idNote, user: idUser },
-        { $push: { work: newWork._id } }
-      )
+    await newWork
+      .save()
       .then((value) => {
         res.status(200).send({ message: "Thêm thành công " });
       })
@@ -42,14 +56,10 @@ const addWordOnNote = async (req, res) => {
 
 const remoteWork = async (req, res) => {
   try {
-    const { idUser, idNote, idWork } = req.body;
-    await note
-      .findOneAndUpdate(
-        { _id: idNote, user: idUser },
-        { $pull: { work: idWork } }
-      )
+    const { idWork } = req.params;
+    await work
+      .findByIdAndDelete({ _id: idWork })
       .then(async (value) => {
-        await work.findByIdAndDelete({ _id: idWork });
         res.status(200).send({ message: "Xóa thành công " });
       })
       .catch((error) => {
@@ -60,7 +70,8 @@ const remoteWork = async (req, res) => {
   }
 };
 module.exports = {
-  addWordOnNote,
+  addNote,
   remoteWork,
   updateStatusWork,
+  getWorkByIdNote,
 };

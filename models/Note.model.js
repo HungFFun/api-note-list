@@ -14,12 +14,6 @@ const NoteSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: user,
   },
-  work: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: work,
-    },
-  ],
   color: {
     type: String,
     default: "#FFFFFF",

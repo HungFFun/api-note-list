@@ -3,7 +3,7 @@ const work = require("../models/Work.model");
 
 const getListNote = async (req, res) => {
   try {
-    const listNote = await note.find({}).populate("work");
+    const listNote = await note.find({});
     res.status(200).send(listNote);
   } catch (error) {
     res.status(400).send(error);
@@ -11,18 +11,9 @@ const getListNote = async (req, res) => {
 };
 const createNote = async (req, res) => {
   try {
-    const { idUser, title, workList, colorNote } = req.body;
-    let listWork = [];
-    workList.map((titleWork) => {
-      const newWord = new work({
-        titleWork: titleWork,
-      });
-      newWord.save();
-      listWork.push(newWord._id);
-    });
+    const { idUser, title, colorNote } = req.body;
     const newNote = new note({
       user: idUser,
-      work: listWork,
       title: title,
       color: colorNote,
     });
@@ -41,9 +32,9 @@ const createNote = async (req, res) => {
 
 const pinNotes = async (req, res) => {
   try {
-    const { idUser, idNote } = req.body;
-    const noteFind = await note
-      .findOne({ _id: idNote, user: idUser })
+    const { id } = req.params;
+    await note
+      .findOne({ _id: id })
       .then(async (value) => {
         await note.findByIdAndUpdate(
           { _id: value._id },
@@ -83,10 +74,26 @@ const deleteNote = async (req, res) => {
     res.status(400).send(error);
   }
 };
+const getNoteByID = async (req, res) => {
+  try {
+    const { id } = req.body;
+    note
+      .findById({ _id: id })
+      .then((value) => {
+        res.status(200).send(value);
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 module.exports = {
   getListNote,
   createNote,
   pinNotes,
   updateColorBackgroundNote,
   deleteNote,
+  getNoteByID,
 };
