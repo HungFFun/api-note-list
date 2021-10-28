@@ -11,11 +11,20 @@ const getListNote = async (req, res) => {
 };
 const createNote = async (req, res) => {
   try {
-    const { idUser, title, colorNote } = req.body;
+    const { idUser, title, colorNote, workList } = req.body;
     const newNote = new note({
       user: idUser,
       title: title,
       color: colorNote,
+    });
+    workList.map((item) => {
+      const newWork = new work({
+        idNote: newNote._id,
+        titleWork: item,
+      });
+      newWork.save().catch((err) => {
+        console.log(err);
+      });
     });
     newNote
       .save()

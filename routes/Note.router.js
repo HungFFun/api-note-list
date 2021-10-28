@@ -3,10 +3,10 @@ const router = express.Router();
 const noteController = require("../controllers/Note.controller");
 
 router.get("/api/notes", noteController.getListNote);
-router.post("/api/note", noteController.getNoteByID);
+router.get("/api/note", noteController.getNoteByID);
 router.post("/api/create-note", noteController.createNote);
-router.patch("/api/update-pin/:id", noteController.pinNotes);
-router.patch(
+router.put("/api/update-pin/:id", noteController.pinNotes);
+router.put(
   "/api/update-background-color/:id",
   noteController.updateColorBackgroundNote
 );

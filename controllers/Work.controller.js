@@ -2,15 +2,15 @@ const work = require("../models/Work.model");
 
 const getWorkByIdNote = async (req, res) => {
   try {
-    const { idNote } = req.body;
-    console.log(idNote);
+    const { id } = req.params;
+    console.log(id);
 
     await work
-      .find({ idNote: idNote })
+      .find({ idNote: id })
       .then((value) => {
         res.status(200).send(value);
       })
-      .catch((err) => { 
+      .catch((err) => {
         res.status(400).send(err);
       });
   } catch (err) {
@@ -33,10 +33,9 @@ const updateStatusWork = async (req, res) => {
   }
 };
 
-const addNote = async (req, res) => {
+const addWork = async (req, res) => {
   try {
     const { idNote, titleWork } = req.body;
-
     const newWork = new work({
       idNote: idNote,
       titleWork: titleWork,
@@ -56,9 +55,9 @@ const addNote = async (req, res) => {
 
 const remoteWork = async (req, res) => {
   try {
-    const { idWork } = req.params;
+    const { id } = req.params;
     await work
-      .findByIdAndDelete({ _id: idWork })
+      .findByIdAndDelete({ _id: id })
       .then(async (value) => {
         res.status(200).send({ message: "Xóa thành công " });
       })
@@ -70,7 +69,7 @@ const remoteWork = async (req, res) => {
   }
 };
 module.exports = {
-  addNote,
+  addWork,
   remoteWork,
   updateStatusWork,
   getWorkByIdNote,
