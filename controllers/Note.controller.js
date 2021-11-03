@@ -11,11 +11,12 @@ const getListNote = async (req, res) => {
 };
 const createNote = async (req, res) => {
   try {
-    const { idUser, title, colorNote, workList } = req.body;
+    const { idUser, title, colorNote, pin, workList } = req.body;
     const newNote = new note({
       user: idUser,
       title: title,
       color: colorNote,
+      pin: pin,
     });
     workList.map((item) => {
       const newWork = new work({
@@ -76,7 +77,8 @@ const updateColorBackgroundNote = async (req, res) => {
 const deleteNote = async (req, res) => {
   try {
     const { id } = req.params;
-    await note.findByIdAndDelete({ _id: id }).then((value) => {
+    await work.deleteMany({ idNote: id }).then(async (value) => {
+      await note.findByIdAndDelete({ _id: id });
       res.status(200).send({ message: "Xóa thành công" });
     });
   } catch (error) {
