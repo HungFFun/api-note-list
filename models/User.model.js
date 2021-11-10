@@ -10,6 +10,14 @@ const UserSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  password: {
+    type: String,
+    require: true,
+  },
+  roles: {
+    type: String,
+    default: "USER",
+  },
 });
 UserSchema.index(
   {
