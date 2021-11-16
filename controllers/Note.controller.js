@@ -30,7 +30,7 @@ const createNote = async (req, res) => {
     newNote
       .save()
       .then((value) => {
-        res.status(200).send({ message: "Thêm thành công" });
+        res.status(200).send({ message: "Add success" });
       })
       .catch((error) => {
         res.status(400).send(error);
@@ -50,7 +50,7 @@ const pinNotes = async (req, res) => {
           { _id: value._id },
           { $set: { pin: !value.pin } }
         );
-        res.status(200).send({ message: "update thành công" });
+        res.status(200).send({ message: "update success" });
       })
       .catch((error) => {
         res.status(400).send(error);
@@ -67,7 +67,7 @@ const updateColorBackgroundNote = async (req, res) => {
 
     await note.findById({ _id: id }).then(async (value) => {
       await note.findByIdAndUpdate({ _id: id }, { $set: { color: color } });
-      res.status(200).send({ message: "update thành công" });
+      res.status(200).send({ message: "update success" });
     });
   } catch (error) {
     res.status(400).send(error);
@@ -79,7 +79,7 @@ const deleteNote = async (req, res) => {
     const { id } = req.params;
     await work.deleteMany({ idNote: id }).then(async (value) => {
       await note.findByIdAndDelete({ _id: id });
-      res.status(200).send({ message: "Xóa thành công" });
+      res.status(200).send({ message: "Delete success" });
     });
   } catch (error) {
     res.status(400).send(error);
@@ -100,6 +100,44 @@ const getNoteByID = async (req, res) => {
     res.status(400).send(error);
   }
 };
+const storageNotes = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await note
+      .findOne({ _id: id })
+      .then(async (value) => {
+        await note.findByIdAndUpdate(
+          { _id: value._id },
+          { $set: { storage: !value.storage } }
+        );
+        res.status(200).send({ message: "update success" });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+const trashNotes = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await note
+      .findOne({ _id: id })
+      .then(async (value) => {
+        await note.findByIdAndUpdate(
+          { _id: value._id },
+          { $set: { trash: !value.trash } }
+        );
+        res.status(200).send({ message: "update success" });
+      })
+      .catch((error) => {
+        res.status(400).send(error);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 module.exports = {
   getListNote,
   createNote,
@@ -107,4 +145,6 @@ module.exports = {
   updateColorBackgroundNote,
   deleteNote,
   getNoteByID,
+  storageNotes,
+  trashNotes,
 };

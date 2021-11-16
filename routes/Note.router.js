@@ -20,6 +20,13 @@ router.put(
   [authJwt.verifyToken],
   noteController.updateColorBackgroundNote
 );
+router.put("/api/trash/:id", [authJwt.verifyToken], noteController.trashNotes);
+router.put(
+  "/api/storage/:id",
+  [authJwt.verifyToken],
+  noteController.storageNotes
+);
+
 router.delete(
   "/api/delete-note/:id",
   [authJwt.verifyToken],
