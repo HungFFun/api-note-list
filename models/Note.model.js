@@ -22,6 +22,14 @@ const NoteSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  storage: {
+    type: Boolean,
+    default: false,
+  },
+  trash: {
+    type: Boolean,
+    default: false,
+  },
 });
 NoteSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("note", NoteSchema, "notes");

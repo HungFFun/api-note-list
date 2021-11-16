@@ -9,7 +9,8 @@ const db = require("./config/db.config");
 const userRouter = require("./routes/User.router");
 const noteRouter = require("./routes/Note.router");
 const workRouter = require("./routes/Work.router");
-
+const cors = require("cors");
+app.use(cors());
 db.connectWithRetry();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

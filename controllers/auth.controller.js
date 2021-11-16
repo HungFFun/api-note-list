@@ -38,8 +38,6 @@ const signIn = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      console.log(user.password);
-
       const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
